@@ -1,5 +1,5 @@
 const Apollo = {
-    version: "2026061202",
+    version: "2026061203",
     empty: "hiker://empty",
     url: "https://cn.xsz-av.com",
     d: [],
@@ -335,23 +335,23 @@ const Apollo = {
         list.forEach(item => {
             var vurl = Apollo.url + pdfh(item, 'a&&href');
             vurl = vurl.replace(/.*(http.*)/, "$1")
-            var 标题 = pdfh(item, "a,-1&&aria-label||Text");
+            var title = pdfh(item, "a,-1&&aria-label||Text");
             var img = pdfh(item, "img&&data-src||src").replace(/(.*)w_330(.*)\/1\.jpg/, "$1w_800$2/default.jpg").replace(/\/1\.jpg/, "/default.jpg").replace("w_480,q_50", "w_800");
             Apollo.d.push({
-                标题: 标题,
+                title: title,
                 desc: pdfh(item, ".left-1&&Text") + "⏰" + pdfh(item, ".right-1&&Text"),
                 img: img ? img : "https://thumbsnap.com/i/wxDcxfJH.png",
                 url: vurl + $('#noHistory#')
                     .rule(() => {
-                        const Apollo = $.require('hiker://page/XSZAVApolloLocal')
+                        const Apollo = $.require('hiker://page/XSZAVApolloRemote')
                         Apollo.videoParse(MY_URL)
                     }),
                 col_type: "movie_2",
                 extra: {
-                    pageTitle: 标题,
+                    pageTitle: title,
                     img: img,
                     longClick: !url.includes("/video/") ? [{
-                        标题: '【跳页】【当前第>' + currpagenum + '<页】【尾页=>' + lastpagenum + '页】',
+                        title: '【跳页】【当前第>' + currpagenum + '<页】【尾页=>' + lastpagenum + '页】',
                         js: $.toString((lastpagenum, url) => {
                                 return $('', '正确的页码：1=>' + lastpagenum + "页")
                                     .input((url, lastpagenum) => {
@@ -380,11 +380,11 @@ const Apollo = {
             var vurl = Apollo.url + pdfh(item, 'a&&href');
             vurl = vurl.replace(/.*(http.*)/, "$1")
             Apollo.d.push({
-                标题: '““””' + pdfh(item, "a&&Text").fontcolor("#FFFFFF"),
+                title: '““””' + pdfh(item, "a&&Text").fontcolor("#FFFFFF"),
                 url: vurl + $('##fypage')
                     .rule(() => {
-                        const Apollo = $.require('hiker://page/XSZAVApolloLocal')
-                        Apollo.yijiParse(MY_URL.分屏("##")[0])
+                        const Apollo = $.require('hiker://page/XSZAVApolloRemote')
+                        Apollo.yijiParse(MY_URL.split("##")[0])
                         setResult(Apollo.d)
                     }),
                 col_type: "flex_button",
@@ -410,7 +410,7 @@ const Apollo = {
                 img: pdfh(item, "img&&data-src||src") ? pdfh(item, "img&&data-src||src") : "https://thumbsnap.com/i/sySMQ7Mg.jpg",
                 url: vurl + $('##fypage')
                     .rule(() => {
-                        const Apollo = $.require('hiker://page/XSZAVApolloLocal')
+                        const Apollo = $.require('hiker://page/XSZAVApolloRemote')
                         Apollo.yijiParse(MY_URL.split("##")[0])
                         setResult(Apollo.d)
                     }),
@@ -566,7 +566,7 @@ const Apollo = {
         Apollo.d.push({
             img: img,
             url: playervars ? playervars + Apollo.videoHeader(Apollo.url + "/") : $(url).lazyRule((detailUrl) => {
-                const Apollo = $.require('hiker://page/XSZAVApolloLocal');
+                const Apollo = $.require('hiker://page/XSZAVApolloRemote');
                 return Apollo.playLazy(detailUrl);
             }, url),
             col_type: "pic_1_full",
@@ -580,7 +580,7 @@ const Apollo = {
                     col_type: "text_1"
                 })
                 Apollo.d.push({
-                    标题: 详细信息.fontcolor("#666666").bold(),
+                    title: 详细信息.fontcolor("#666666").bold(),
                     col_type: "rich_text"
                 })
                 Apollo.d.push({
@@ -592,7 +592,7 @@ const Apollo = {
             var 番号 = pdfh(html, "body&&.text-gray-700:matches(番号:)&&Text").trim()
             if (番号 != "") {
                 Apollo.d.push({
-                    标题: "““””" + 番号.fontcolor("#666666").bold(),
+                    title: "““””" + 番号.fontcolor("#666666").bold(),
                     url: "hiker://empty",
                     col_type: "text_1"
                 })
@@ -602,7 +602,7 @@ const Apollo = {
             var 日期 = pdfh(html, "body&&.text-gray-700:matches(日期)&&Text").trim()
             if (日期 != "") {
                 Apollo.d.push({
-                    标题: "““””" + 日期.fontcolor("#666666").bold(),
+                    title: "““””" + 日期.fontcolor("#666666").bold(),
                     url: "hiker://empty",
                     col_type: "text_1"
                 })
@@ -612,7 +612,7 @@ const Apollo = {
             var 标题 = pdfh(html, "body&&.text-gray-700:matches(标题:)&&Text").trim()
             if (标题 != "") {
                 Apollo.d.push({
-                    标题: "““””" + 标题.fontcolor("#666666").bold(),
+                    title: "““””" + 标题.fontcolor("#666666").bold(),
                     url: "hiker://empty",
                     col_type: "text_1"
                 })
@@ -624,18 +624,18 @@ const Apollo = {
             list.forEach(item => {
                 var vurl = Apollo.url + pdfh(item, 'a&&href');
                 vurl = vurl.replace(/.*(http.*)/, "$1");
-                var 标题 = pdfh(item, "a&&Text");
+                var title = pdfh(item, "a&&Text");
                 Apollo.d.push({
-                    标题: '““””' + 标题.fontcolor("#FFFFFF"),
+                    title: '““””' + title.fontcolor("#FFFFFF"),
                     url: vurl + $('##fypage')
                         .rule(() => {
-                            const Apollo = $.require('hiker://page/XSZAVApolloLocal')
-                            Apollo.yijiParse(MY_URL.分屏("##")[0])
+                            const Apollo = $.require('hiker://page/XSZAVApolloRemote')
+                            Apollo.yijiParse(MY_URL.split("##")[0])
                             setResult(Apollo.d)
                         }),
                     col_type: "flex_button",
                     extra: {
-                        pageTitle: 标题,
+                        pageTitle: title,
                         'backgroundColor': Apollo.getRangeColors()
                     }
                 })
@@ -650,12 +650,12 @@ const Apollo = {
             list.forEach(item => {
                 var vurl = Apollo.url + pdfh(item, 'a&&href');
                 vurl = vurl.replace(/.*(http.*)/, "$1");
-                var 标题 = pdfh(item, "a&&Text");
+                var title = pdfh(item, "a&&Text");
                 Apollo.d.push({
                     标题: '““””' + 标题.fontcolor("#FFFFFF"),
                     url: vurl + $('##fypage')
                         .rule(() => {
-                            const Apollo = $.require('hiker://page/XSZAVApolloLocal')
+                            const Apollo = $.require('hiker://page/XSZAVApolloRemote')
                             Apollo.yijiParse(MY_URL.分屏("##")[0])
                             setResult(Apollo.d)
                         }),
@@ -707,7 +707,7 @@ const Apollo = {
                 img: img,
                 url: Apollo.url + `/video/${item.VID}` + $('#noHistory#')
                     .rule(() => {
-                        const Apollo = $.require('hiker://page/XSZAVApolloLocal')
+                        const Apollo = $.require('hiker://page/XSZAVApolloRemote')
                         Apollo.videoParse(MY_URL)
                     }),
                 col_type: "movie_2",
