@@ -1,9 +1,8 @@
-
 var TkTube = {
-    version: "2026061201"
+    version: "2026061202"
 };
 
-var lazy = $('#noLoading#').lazyRule(() => {
+var lazy = $('#noLoading#').lazyRule(function() {
     var detailUrl = input;
     var ua = "Mozilla/5.0 (Linux; Android 15) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Mobile Safari/537.36";
 
@@ -50,7 +49,7 @@ var lazy = $('#noLoading#').lazyRule(() => {
 
     function getValue(text, key) {
         text = decodeText(text || "");
-        var safeKey = key.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+        var safeKey = key;
         var list = [
             新建 RegExp("['\"]?" + safeKey + "['\"]?\\s*[:=]\\s*(['\"])([\\s\\S]*?)\\1", "i"),
             新建 RegExp("flashvars\\." + safeKey + "\\s*=\\s*(['\"])([\\s\\S]*?)\\1", "i"),
@@ -95,27 +94,26 @@ var lazy = $('#noLoading#').lazyRule(() => {
         }
 
         var keys = ["video_alt_url5", "video_alt_url4", "video_alt_url3", "video_alt_url2", "video_alt_url", "video_url"];
-        keys.forEach(key => {
+        for (var k = 0; k < keys.length; k++) {
+            var key = keys[k];
             var url = getValue(source, key);
             var 名字 = getValue(source, key + "_text") || key.replace("video_", "").replace(/_/g, " ");
             添加(url, 名字);
-        });
-
-        var kv = /(?:['"]?(video(?:_alt)?_url\d*)['"]?|flashvars\.(video(?:_alt)?_url\d*)|flashvars\[['"](video(?:_alt)?_url\d*)['"]\])\s*[:=]\s*(['"])([\s\S]*?)\4/ig;
-        var m;
-        while ((m = kv.exec(source)) !== null) {
-            var key = m[1] || m[2] || m[3] || "";
-            添加(m[5], getValue(source, key + "_text") || key);
         }
 
-        (source.match(/https?:\/\/[^"'<>\\\s]+?(?:\.m3u8|\.mp4|\/get_file\/[^"'<>\\\s]*)(?:\?[^"'<>\\\s]*)?/ig) || []).forEach(u => 添加(u, "直连"));
-        (source.match(/["'](\/get_file\/[^"']+)["']/ig) || []).forEach(s => 添加(s.replace(/^["']|["']$/g, ""), "直连"));
-        (source.match(/["'](\/[^"']+?\.(?:m3u8|mp4)(?:\?[^"']*)?)["']/ig) || []).forEach(s => 添加(s.replace(/^["']|["']$/g, ""), "直连"));
+        var directList = source.match(/https?:\/\/[^"'<>\\\s]+?(?:\.m3u8|\.mp4|\/get_file\/[^"'<>\\\s]*)(?:\?[^"'<>\\\s]*)?/ig) || [];
+        for (var i = 0; i < directList.length; i++) 添加(directList[i], "直连");
+        var fileList = source.match(/["'](\/get_file\/[^"']+)["']/ig) || [];
+        for (var j = 0; j < fileList.length; j++) 添加(fileList[j].replace(/^["']|["']$/g, ""), "直连");
+        var mediaList = source.match(/["'](\/[^"']+?\.(?:m3u8|mp4)(?:\?[^"']*)?)["']/ig) || [];
+        for (var n = 0; n < mediaList.length; n++) 添加(mediaList[n].replace(/^["']|["']$/g, ""), "直连");
 
         if (urls.length === 0) return "toast://未找到播放地址";
         if (urls.length === 1) return withHeader(urls[0]);
+        var playUrls = [];
+        for (var p = 0; p < urls.length; p++) playUrls.push(withHeader(urls[p]));
         return {
-            urls: urls.map(u => withHeader(u)),
+            urls: playUrls,
             names: names
         };
     } catch (e) {
