@@ -1,5 +1,5 @@
 var TkTube = {
-    version: "2026061203"
+    version: "2026061204"
 };
 
 var lazy = $('#noLoading#').lazyRule(function() {
@@ -26,19 +26,29 @@ var lazy = $('#noLoading#').lazyRule(function() {
         return s >= 0 ? url.substring(0, s + 1) : homeOf(detailUrl) + "/";
     }
 
+    function replaceAllText(str, from, to) {
+        str = str || "";
+        var pos = str.indexOf(from);
+        while (pos >= 0) {
+            str = str.substring(0, pos) + to + str.substring(pos + from.length);
+            pos = str.indexOf(from, pos + to.length);
+        }
+        return str;
+    }
+
     function decodeText(str) {
         str = str || "";
-        return str
-            .split("\\u002F").join("/")
-            .split("\\u002f").join("/")
-            .split("\\/").join("/")
-            .split("&amp;").join("&")
-            .split("&quot;").join('"')
-            .split("&#34;").join('"')
-            .split("&#39;").join("'")
-            .split("\\x3d").join("=")
-            .split("\\x3D").join("=")
-            .split("\\x26").join("&");
+        str = replaceAllText(str, "\\u002F", "/");
+        str = replaceAllText(str, "\\u002f", "/");
+        str = replaceAllText(str, "\\/", "/");
+        str = replaceAllText(str, "&amp;", "&");
+        str = replaceAllText(str, "&quot;", '"');
+        str = replaceAllText(str, "&#34;", '"');
+        str = replaceAllText(str, "&#39;", "'");
+        str = replaceAllText(str, "\\x3d", "=");
+        str = replaceAllText(str, "\\x3D", "=");
+        str = replaceAllText(str, "\\x26", "&");
+        return str;
     }
 
     function normalizeUrl(url, base) {
@@ -161,6 +171,13 @@ var lazy = $('#noLoading#').lazyRule(function() {
         names.push(name || "播放");
     }
 
+    function prettyName(key) {
+        key = key || "";
+        key = replaceAllText(key, "video_", "");
+        key = replaceAllText(key, "_", " ");
+        return key || "播放";
+    }
+
     function readUntilDelimiter(text, pos) {
         var out = "";
         for (var i = pos; i < text.length; i++) {
@@ -206,7 +223,7 @@ var lazy = $('#noLoading#').lazyRule(function() {
         for (var k = 0; k < keys.length; k++) {
             var key = keys[k];
             var u = getValue(source, key);
-            var n = getValue(source, key + "_text") || key.分屏("video_").join("").分屏("_").join(" ");
+            var n = getValue(source, key + "_text") || prettyName(key);
             addMedia(u, n, urls, names, rnd);
         }
 
